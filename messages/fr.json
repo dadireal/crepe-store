@@ -1,0 +1,94 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "menu": "Menu",
+    "cart": "Panier",
+    "switchLang": "عربي",
+    "admin": "Admin"
+  },
+  "home": {
+    "hero": "Crêpes Fraîches en Toutes Saveurs",
+    "heroSub": "Créez vos moments sucrés avec nos délicieuses crêpes françaises authentiques",
+    "orderNow": "Commander Maintenant",
+    "featured": "Produits Vedettes",
+    "viewAll": "Voir Tout"
+  },
+  "menu": {
+    "title": "Notre Menu",
+    "addToCart": "Ajouter au Panier",
+    "dzd": "DZD",
+    "noProducts": "Aucun produit disponible actuellement"
+  },
+  "cart": {
+    "title": "Panier",
+    "empty": "Votre panier est vide",
+    "total": "Total",
+    "checkout": "Passer la Commande",
+    "remove": "Supprimer",
+    "continueShopping": "Continuer les Achats",
+    "quantity": "Quantité",
+    "dzd": "DZD"
+  },
+  "checkout": {
+    "title": "Passer la Commande",
+    "name": "Nom Complet",
+    "phone": "Numéro de Téléphone",
+    "address": "Adresse",
+    "deliveryMethod": "Mode de Livraison",
+    "delivery": "Livraison à Domicile",
+    "pickup": "Retrait en Magasin",
+    "paymentMethod": "Mode de Paiement",
+    "baridimob": "Baridimob",
+    "cash": "Paiement en Espèces",
+    "note": "Notes Supplémentaires",
+    "notePlaceholder": "Instructions spéciales pour la commande...",
+    "submit": "Confirmer la Commande",
+    "submitting": "Confirmation en cours...",
+    "namePlaceholder": "Entrez votre nom complet",
+    "phonePlaceholder": "05XXXXXXXX",
+    "addressPlaceholder": "Entrez votre adresse",
+    "cartEmpty": "Votre panier est vide. Ajoutez des produits d'abord.",
+    "backToMenu": "Retour au Menu"
+  },
+  "confirmation": {
+    "title": "Commande Confirmée!",
+    "message": "Merci pour votre commande. Nous vous contacterons bientôt pour confirmer les détails.",
+    "whatsapp": "Contacter via WhatsApp",
+    "orderRef": "Référence de Commande",
+    "backHome": "Retour à l'Accueil",
+    "estimatedTime": "Temps de livraison estimé: 30-45 minutes"
+  },
+  "product": {
+    "back": "Retour",
+    "addToCart": "Ajouter au Panier",
+    "dzd": "DZD",
+    "quantity": "Quantité",
+    "description": "Description",
+    "unavailable": "Indisponible actuellement"
+  },
+  "admin": {
+    "title": "Tableau de Bord",
+    "products": "Produits",
+    "orders": "Commandes",
+    "password": "Mot de Passe",
+    "login": "Connexion",
+    "logout": "Déconnexion",
+    "addProduct": "Ajouter un Produit",
+    "editProduct": "Modifier le Produit",
+    "deleteProduct": "Supprimer le Produit",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "status": "Statut",
+    "pending": "En Attente",
+    "confirmed": "Confirmé",
+    "delivered": "Livré",
+    "cancelled": "Annulé",
+    "customer": "Client",
+    "phone": "Téléphone",
+    "total": "Total",
+    "date": "Date",
+    "update": "Mettre à Jour",
+    "wrongPassword": "Mot de passe incorrect",
+    "enterPassword": "Entrez le mot de passe pour accéder au tableau de bord"
+  }
+}

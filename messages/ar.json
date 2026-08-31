@@ -1,0 +1,94 @@
+{
+  "nav": {
+    "home": "الرئيسية",
+    "menu": "القائمة",
+    "cart": "السلة",
+    "switchLang": "Français",
+    "admin": "الإدارة"
+  },
+  "home": {
+    "hero": "كريب طازج بكل النكهات",
+    "heroSub": "اصنع لحظاتك الحلوة مع أشهى الكريبات الفرنسية الأصيلة",
+    "orderNow": "اطلب الآن",
+    "featured": "المنتجات المميزة",
+    "viewAll": "عرض الكل"
+  },
+  "menu": {
+    "title": "قائمتنا",
+    "addToCart": "أضف إلى السلة",
+    "dzd": "دج",
+    "noProducts": "لا توجد منتجات متاحة حالياً"
+  },
+  "cart": {
+    "title": "سلة المشتريات",
+    "empty": "سلتك فارغة",
+    "total": "المجموع",
+    "checkout": "إتمام الطلب",
+    "remove": "حذف",
+    "continueShopping": "متابعة التسوق",
+    "quantity": "الكمية",
+    "dzd": "دج"
+  },
+  "checkout": {
+    "title": "إتمام الطلب",
+    "name": "الاسم الكامل",
+    "phone": "رقم الهاتف",
+    "address": "العنوان",
+    "deliveryMethod": "طريقة التسليم",
+    "delivery": "توصيل إلى المنزل",
+    "pickup": "استلام من المحل",
+    "paymentMethod": "طريقة الدفع",
+    "baridimob": "بريدي موب",
+    "cash": "دفع نقداً",
+    "note": "ملاحظات إضافية",
+    "notePlaceholder": "أي تعليمات خاصة للطلب...",
+    "submit": "تأكيد الطلب",
+    "submitting": "جاري التأكيد...",
+    "namePlaceholder": "أدخل اسمك الكامل",
+    "phonePlaceholder": "05XXXXXXXX",
+    "addressPlaceholder": "أدخل عنوانك",
+    "cartEmpty": "سلتك فارغة. أضف منتجات أولاً.",
+    "backToMenu": "العودة إلى القائمة"
+  },
+  "confirmation": {
+    "title": "تم تأكيد طلبك!",
+    "message": "شكراً لطلبك. سنتواصل معك قريباً لتأكيد التفاصيل.",
+    "whatsapp": "تواصل عبر واتساب",
+    "orderRef": "رقم الطلب",
+    "backHome": "العودة للرئيسية",
+    "estimatedTime": "وقت التسليم المتوقع: 30-45 دقيقة"
+  },
+  "product": {
+    "back": "العودة",
+    "addToCart": "أضف إلى السلة",
+    "dzd": "دج",
+    "quantity": "الكمية",
+    "description": "الوصف",
+    "unavailable": "غير متاح حالياً"
+  },
+  "admin": {
+    "title": "لوحة التحكم",
+    "products": "المنتجات",
+    "orders": "الطلبات",
+    "password": "كلمة المرور",
+    "login": "تسجيل الدخول",
+    "logout": "تسجيل الخروج",
+    "addProduct": "إضافة منتج",
+    "editProduct": "تعديل المنتج",
+    "deleteProduct": "حذف المنتج",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "status": "الحالة",
+    "pending": "قيد الانتظار",
+    "confirmed": "تم التأكيد",
+    "delivered": "تم التسليم",
+    "cancelled": "ملغي",
+    "customer": "العميل",
+    "phone": "الهاتف",
+    "total": "المجموع",
+    "date": "التاريخ",
+    "update": "تحديث",
+    "wrongPassword": "كلمة المرور غير صحيحة",
+    "enterPassword": "أدخل كلمة المرور للوصول إلى لوحة التحكم"
+  }
+}

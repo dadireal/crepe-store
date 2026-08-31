@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #E8A87C;
+  --accent: #5C3D2E;
+  --cream: #FFF8F0;
+}
+
+body {
+  background-color: var(--cream);
+  color: var(--accent);
+}
+
+.font-cairo {
+  font-family: 'Cairo', sans-serif;
+}
+
+.font-poppins {
+  font-family: 'Poppins', sans-serif;
+}
