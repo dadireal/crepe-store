@@ -11,7 +11,7 @@ export interface WhatsAppOrderDetails {
 }
 
 export function buildWhatsAppUrl(order: WhatsAppOrderDetails): string {
-  const rawPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '213550926271';
+  const rawPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '213553440229';
   const cleanPhone = rawPhone.replace(/\D/g, '');
 
   const itemsList = order.items
