@@ -83,7 +83,7 @@ export default function CartDrawer({ locale }: { locale: string }) {
                   className="bg-white rounded-2xl p-3.5 border border-accent/10 flex items-center gap-3.5 shadow-2xs hover:shadow-xs transition-shadow"
                 >
                   {/* Thumbnail */}
-                  <div className="relative w-18 h-18 rounded-xl overflow-hidden shrink-0 bg-accent/5">
+                  <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden shrink-0 bg-accent/5">
                     <Image
                       src={item.image}
                       alt={name}

@@ -36,7 +36,7 @@ export default async function ProductDetailPage({
 
       {/* Main card */}
       <div className="bg-white rounded-2xl sm:rounded-card border border-accent/10 shadow-sm overflow-hidden grid grid-cols-1 md:grid-cols-2 gap-6 p-4 sm:p-6 md:p-8">
-        <div className="relative aspect-4/3 md:aspect-auto md:h-full min-h-[260px] sm:min-h-[320px] rounded-xl sm:rounded-2xl overflow-hidden bg-accent/5">
+        <div className="relative h-72 sm:h-96 w-full rounded-xl sm:rounded-2xl overflow-hidden bg-accent/5">
           <Image
             src={product.image}
             alt={name}

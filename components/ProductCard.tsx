@@ -46,7 +46,7 @@ export default function ProductCard({ product, locale }: { product: any; locale:
       {/* Product Image */}
       <Link
         href={`/${locale}/item/${product.slug}`}
-        className="relative aspect-4/3 w-full overflow-hidden bg-accent/5 block select-none"
+        className="relative h-48 sm:h-52 w-full overflow-hidden bg-accent/5 block select-none"
       >
         <Image
           src={product.image}
