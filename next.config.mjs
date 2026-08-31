@@ -4,11 +4,14 @@ const withNextIntl = createNextIntlPlugin('./i18n.ts');
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    // Allow any remote image source (Cloudinary, external URLs, etc.)
     remotePatterns: [
-      { protocol: 'https', hostname: 'images.unsplash.com' },
-      { protocol: 'https', hostname: 'res.cloudinary.com' }
-    ]
-  }
+      { protocol: 'https', hostname: '**' },
+      { protocol: 'http', hostname: '**' },
+    ],
+    // Disable optimization for local uploads so they always display
+    unoptimized: false,
+  },
 };
 
 export default withNextIntl(nextConfig);
