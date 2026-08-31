@@ -18,7 +18,7 @@ export default function MobileNav({ locale }: { locale: string }) {
   const isHome = pathname === `/${locale}` || pathname === `/${locale}/`;
   const isMenu = pathname.startsWith(`/${locale}/menu`) || pathname.startsWith(`/${locale}/item`);
 
-  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '213550926271';
+  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '213553440229';
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
     locale === 'ar' ? 'السلام عليكم! أريد الاستفسار عن تلاعيش كريب 🥞' : 'Bonjour ! Je souhaite me renseigner sur TL crepes 🥞'
   )}`;
