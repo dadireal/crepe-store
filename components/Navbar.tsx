@@ -30,7 +30,7 @@ export default function Navbar({ locale }: { locale: string }) {
             🥞
           </span>
           <span className="font-black text-lg sm:text-2xl text-accent group-hover:text-primary transition-colors tracking-tight">
-            {locale === 'ar' ? 'كريب بيتي' : 'Crêpe Store'}
+            {locale === 'ar' ? 'تلاعيش كريب' : 'TL crepes'}
           </span>
         </Link>
 

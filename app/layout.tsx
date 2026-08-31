@@ -3,12 +3,12 @@ import { ReactNode } from 'react';
 import type { Metadata, Viewport } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Crepe Store | كريب بيتي',
-  description: 'Fresh & Delicious Sweet Crepes | كريب حلو طازج ولذيذ',
-  applicationName: 'Crepe Store',
+  title: 'TL crepes | تلاعيش كريب',
+  description: 'Fresh & Delicious Sweet Crepes | تلاعيش كريب - أشهى كريب حلو طازج ولذيذ',
+  applicationName: 'TL crepes',
   appleWebApp: {
     capable: true,
-    title: 'Crepe Store',
+    title: 'TL crepes',
     statusBarStyle: 'default',
   },
   formatDetection: {

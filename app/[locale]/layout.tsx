@@ -45,7 +45,7 @@ export default async function LocaleLayout({
           <MobileNav locale={locale} />
           <footer className="bg-accent text-cream/90 py-8 px-4 text-center border-t border-accent/20 pb-24 md:pb-8">
             <div className="max-w-4xl mx-auto space-y-2">
-              <p className="font-bold text-lg text-primary">🥞 Crepe Store | كريب بيتي</p>
+              <p className="font-bold text-lg text-primary">🥞 TL crepes | تلاعيش كريب</p>
               <p className="text-sm text-cream/70">
                 {locale === 'ar' ? 'أشهى كريب حلو طازج محضر بأجود المكونات' : 'Délicieuses crêpes sucrées faites maison avec amour'}
               </p>

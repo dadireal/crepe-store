@@ -1,4 +1,4 @@
-# 🥞 Crepe eStore | متجر الكريب
+# 🥞 TL crepes | تلاعيش كريب
 
 A bilingual (Arabic & French) modern e-commerce web application for sweet crepes, with WhatsApp and Google Sheets integration.
 

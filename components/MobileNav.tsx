@@ -20,7 +20,7 @@ export default function MobileNav({ locale }: { locale: string }) {
 
   const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '213550926271';
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-    locale === 'ar' ? 'السلام عليكم! أريد الاستفسار عن كريب بيتي 🥞' : 'Bonjour ! Je souhaite me renseigner sur vos crêpes 🥞'
+    locale === 'ar' ? 'السلام عليكم! أريد الاستفسار عن تلاعيش كريب 🥞' : 'Bonjour ! Je souhaite me renseigner sur TL crepes 🥞'
   )}`;
 
   return (
