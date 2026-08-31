@@ -15,31 +15,41 @@ export function buildWhatsAppUrl(order: WhatsAppOrderDetails): string {
   const cleanPhone = rawPhone.replace(/\D/g, '');
 
   const itemsList = order.items
-    .map((item) => `🥞 ${item.name} x${item.quantity} (${item.price * item.quantity} دج)`)
+    .map((item) => `- ${item.name} x${item.quantity} (${item.price * item.quantity} دج)`)
     .join('\n');
 
   const deliveryText = order.deliveryMethod === 'delivery' 
-    ? `🛵 توصيل للمنزل (${order.customerAddress || 'عنوان العميل'})` 
-    : '🏪 استلام من المحل';
+    ? `*طريقة الاستلام:* توصيل للمنزل (${order.customerAddress || 'عنوان العميل'})` 
+    : '*طريقة الاستلام:* استلام من المحل';
 
   const paymentText = order.paymentMethod === 'baridimob' 
-    ? '💳 بريدي موب (BaridiMob)' 
-    : '💵 دفع نقداً (Main à main)';
+    ? '*طريقة الدفع:* بريدي موب (BaridiMob)' 
+    : '*طريقة الدفع:* دفع نقداً (Main à main)';
 
   const shortId = order.id.slice(-6).toUpperCase();
 
-  const message = `👋 مرحباً، طلب جديد (${shortId})
+  const lines = [
+    `*طلب جديد (${shortId})*`,
+    '',
+    `*الاسم:* ${order.customerName}`,
+    `*الهاتف:* ${order.customerPhone}`,
+    deliveryText,
+    paymentText,
+    '',
+    '*الطلبات:*',
+    itemsList,
+    '',
+    `*المجموع:* ${order.total} دج`,
+  ];
 
-👤 العميل: ${order.customerName}
-📱 الهاتف: ${order.customerPhone}
-${deliveryText}
-${paymentText}
+  if (order.note && order.note.trim()) {
+    lines.push(`*ملاحظة:* ${order.note}`);
+  }
 
-📋 الطلبات:
-${itemsList}
+  lines.push('');
+  lines.push('يرجى تأكيد الطلب. شكراً!');
 
-💰 المجموع: ${order.total} دج
-${order.note ? `📝 ملاحظة: ${order.note}\n` : ''}يرجى تأكيد الطلب. شكراً!`;
+  const message = lines.join('\n');
 
   return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
 }
