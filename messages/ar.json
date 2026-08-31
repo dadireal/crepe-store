@@ -90,6 +90,26 @@
     "date": "التاريخ",
     "update": "تحديث",
     "wrongPassword": "كلمة المرور غير صحيحة",
-    "enterPassword": "أدخل كلمة المرور للوصول إلى لوحة التحكم"
+    "enterPassword": "أدخل كلمة المرور للوصول إلى لوحة التحكم",
+    "searchOrders": "بحث بالاسم، رقم الهاتف، أو رقم الطلب...",
+    "searchProducts": "بحث في المنتجات...",
+    "allStatuses": "جميع الحالات",
+    "allMethods": "جميع طرق الاستلام",
+    "deliveryOnly": "🛵 توصيل فقط",
+    "pickupOnly": "🏪 استلام فقط",
+    "deleteOrder": "حذف الطلب",
+    "deleteConfirmOrder": "هل أنت متأكد من حذف هذا الطلب؟",
+    "deleteConfirmProduct": "هل أنت متأكد من حذف هذا المنتج؟",
+    "statsTotalRevenue": "المبيعات الإجمالية",
+    "statsTotalOrders": "إجمالي الطلبات",
+    "statsPending": "طلبات معلقة",
+    "inStock": "متوفر",
+    "outOfStock": "غير متوفر",
+    "toggleFeatured": "منتج مميز في الرئيسية",
+    "toggleAvailable": "متاح للطلب",
+    "callCustomer": "اتصال",
+    "whatsappCustomer": "واتساب",
+    "noMatchingOrders": "لا توجد طلبات مطابقة للبحث",
+    "noMatchingProducts": "لا توجد منتجات مطابقة للبحث"
   }
 }

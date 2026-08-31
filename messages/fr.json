@@ -90,6 +90,26 @@
     "date": "Date",
     "update": "Mettre à Jour",
     "wrongPassword": "Mot de passe incorrect",
-    "enterPassword": "Entrez le mot de passe pour accéder au tableau de bord"
+    "enterPassword": "Entrez le mot de passe pour accéder au tableau de bord",
+    "searchOrders": "Rechercher par nom, téléphone ou N° commande...",
+    "searchProducts": "Rechercher un produit...",
+    "allStatuses": "Tous les statuts",
+    "allMethods": "Tous les modes",
+    "deliveryOnly": "🛵 Livraison uniquement",
+    "pickupOnly": "🏪 Retrait uniquement",
+    "deleteOrder": "Supprimer la commande",
+    "deleteConfirmOrder": "Êtes-vous sûr de vouloir supprimer cette commande ?",
+    "deleteConfirmProduct": "Êtes-vous sûr de vouloir supprimer ce produit ?",
+    "statsTotalRevenue": "Chiffre d'Affaires",
+    "statsTotalOrders": "Total Commandes",
+    "statsPending": "En Attente",
+    "inStock": "En Stock",
+    "outOfStock": "Épuisé",
+    "toggleFeatured": "Afficher en vedette",
+    "toggleAvailable": "Disponible à la vente",
+    "callCustomer": "Appeler",
+    "whatsappCustomer": "WhatsApp",
+    "noMatchingOrders": "Aucune commande correspondante",
+    "noMatchingProducts": "Aucun produit correspondant"
   }
 }
