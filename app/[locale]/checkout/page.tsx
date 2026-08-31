@@ -27,7 +27,7 @@ export default function CheckoutPage({ params: { locale } }: { params: { locale:
         <span className="text-5xl">🛒</span>
         <p className="text-accent/70 font-semibold">{t('cartEmpty')}</p>
         <Link
-          href={"/" + locale + "/menu"}
+          href={`/${locale}/menu`}
           className="inline-block bg-accent text-cream px-6 py-2.5 rounded-xl font-bold text-sm shadow-sm"
         >
           {t('backToMenu')}
@@ -79,10 +79,12 @@ export default function CheckoutPage({ params: { locale } }: { params: { locale:
         throw new Error(data.error || 'Failed to place order');
       }
 
+      if (typeof window !== 'undefined' && data.whatsappUrl) {
+        sessionStorage.setItem('last_whatsapp_url_' + data.orderId, data.whatsappUrl);
+      }
+
       clearCart();
-      
-      const whatsappUrlParam = data.whatsappUrl ? encodeURIComponent(data.whatsappUrl) : '';
-      router.push("/" + locale + "/order-confirmed?id=" + data.orderId + "&whatsapp=" + whatsappUrlParam);
+      router.push(`/${locale}/order-confirmed?id=${data.orderId}`);
     } catch (err: any) {
       setError(err.message || 'Something went wrong');
       setSubmitting(false);

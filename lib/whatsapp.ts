@@ -15,26 +15,31 @@ export function buildWhatsAppUrl(order: WhatsAppOrderDetails): string {
   const cleanPhone = rawPhone.replace(/\D/g, '');
 
   const itemsList = order.items
-    .map((item) => "🥞 " + item.name + " x" + item.quantity + " (" + (item.price * item.quantity) + " دج)")
+    .map((item) => `🥞 ${item.name} x${item.quantity} (${item.price * item.quantity} دج)`)
     .join('\n');
 
   const deliveryText = order.deliveryMethod === 'delivery' 
-    ? "🛵 توصيل للمنزل (" + (order.customerAddress || 'عنوان العميل') + ")" 
+    ? `🛵 توصيل للمنزل (${order.customerAddress || 'عنوان العميل'})` 
     : '🏪 استلام من المحل';
 
   const paymentText = order.paymentMethod === 'baridimob' 
     ? '💳 بريدي موب (BaridiMob)' 
     : '💵 دفع نقداً (Main à main)';
 
-  const message = "👋 مرحبا، طلب جديد رقم: #" + order.id.slice(-6).toUpperCase() + "\n\n" +
-    "👤 العميل: " + order.customerName + "\n" +
-    "📱 الهاتف: " + order.customerPhone + "\n" +
-    deliveryText + "\n" +
-    paymentText + "\n\n" +
-    "📋 الطلبات:\n" + itemsList + "\n\n" +
-    "💰 المجموع: " + order.total + " دج\n" +
-    (order.note ? "📝 ملاحظة: " + order.note + "\n" : "") +
-    "يرجى تأكيد الطلب. شكراً!";
+  const shortId = order.id.slice(-6).toUpperCase();
 
-  return "https://wa.me/" + cleanPhone + "?text=" + encodeURIComponent(message);
+  const message = `👋 مرحباً، طلب جديد (${shortId})
+
+👤 العميل: ${order.customerName}
+📱 الهاتف: ${order.customerPhone}
+${deliveryText}
+${paymentText}
+
+📋 الطلبات:
+${itemsList}
+
+💰 المجموع: ${order.total} دج
+${order.note ? `📝 ملاحظة: ${order.note}\n` : ''}يرجى تأكيد الطلب. شكراً!`;
+
+  return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
 }
