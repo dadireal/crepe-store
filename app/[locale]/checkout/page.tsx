@@ -4,11 +4,13 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useCartStore } from '@/store/cartStore';
-import { Truck, Store, CreditCard, Banknote, Loader2 } from 'lucide-react';
+import { Truck, Store, CreditCard, Banknote, Loader2, ArrowLeft, ArrowRight, ShoppingBag } from 'lucide-react';
 
 export default function CheckoutPage({ params: { locale } }: { params: { locale: string } }) {
   const t = useTranslations('checkout');
+  const tMenu = useTranslations('menu');
   const router = useRouter();
   const { items, totalPrice, clearCart } = useCartStore();
 
@@ -21,16 +23,21 @@ export default function CheckoutPage({ params: { locale } }: { params: { locale:
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
+  const isRtl = locale === 'ar';
+
   if (items.length === 0) {
     return (
-      <div className="max-w-md mx-auto px-4 py-16 text-center space-y-4">
-        <span className="text-5xl">🛒</span>
-        <p className="text-accent/70 font-semibold">{t('cartEmpty')}</p>
+      <div className="max-w-md mx-auto px-4 py-16 text-center space-y-5">
+        <div className="w-20 h-20 bg-primary/20 text-accent rounded-full flex items-center justify-center mx-auto text-4xl shadow-inner">
+          🛒
+        </div>
+        <p className="text-accent/80 font-bold text-base">{t('cartEmpty')}</p>
         <Link
           href={`/${locale}/menu`}
-          className="inline-block bg-accent text-cream px-6 py-2.5 rounded-xl font-bold text-sm shadow-sm"
+          className="inline-flex items-center gap-2 bg-accent text-cream px-6 py-3 rounded-xl font-bold text-sm shadow-md hover:bg-accent/90 active:scale-95 transition-all"
         >
-          {t('backToMenu')}
+          <span>{t('backToMenu')}</span>
+          {isRtl ? <ArrowLeft className="w-4 h-4" /> : <ArrowRight className="w-4 h-4" />}
         </Link>
       </div>
     );
@@ -41,7 +48,7 @@ export default function CheckoutPage({ params: { locale } }: { params: { locale:
     setError('');
 
     if (!customerName.trim() || !customerPhone.trim()) {
-      setError(locale === 'ar' ? 'يرجى إدخال الاسم ورقم الهاتف' : "Veuillez renseigner votre nom et téléphone");
+      setError(locale === 'ar' ? 'يرجى إدخال الاسم ورقم الهاتف' : "Veuillez renseigner votre nom et numéro de téléphone");
       return;
     }
 
@@ -92,55 +99,99 @@ export default function CheckoutPage({ params: { locale } }: { params: { locale:
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
-      <h1 className="text-3xl font-black text-accent">{t('title')}</h1>
+    <div className="max-w-2xl mx-auto px-4 py-6 sm:py-10 space-y-6">
+      {/* Header */}
+      <div className="space-y-1">
+        <h1 className="text-2xl sm:text-3xl font-black text-accent tracking-tight">{t('title')}</h1>
+        <p className="text-xs sm:text-sm text-accent/70">
+          {locale === 'ar'
+            ? 'املأ بياناتك لتأكيد طلبك وتجهيزه في أسرع وقت'
+            : 'Complétez vos coordonnées pour valider votre commande rapidement'}
+        </p>
+      </div>
 
       {error && (
-        <div className="bg-red-50 text-red-700 p-4 rounded-xl text-sm font-semibold border border-red-200">
+        <div className="bg-red-50 text-red-700 p-4 rounded-xl text-sm font-bold border border-red-200 animate-shake">
           {error}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-card p-6 border border-accent/10 shadow-sm space-y-6">
+      {/* Order Summary Dropdown/Card */}
+      <div className="bg-white rounded-2xl p-4 sm:p-5 border border-accent/10 shadow-2xs space-y-3">
+        <div className="flex items-center justify-between pb-2 border-b border-accent/10">
+          <span className="font-bold text-xs sm:text-sm text-accent flex items-center gap-1.5">
+            <ShoppingBag className="w-4 h-4 text-primary" />
+            <span>{locale === 'ar' ? 'ملخص الطلب' : 'Résumé de la commande'}</span>
+          </span>
+          <span className="text-xs font-bold text-accent/60">
+            {items.length} {locale === 'ar' ? 'منتجات' : 'articles'}
+          </span>
+        </div>
+
+        <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
+          {items.map((item) => (
+            <div key={item.id} className="flex items-center justify-between text-xs sm:text-sm gap-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="w-5 h-5 rounded-md bg-cream text-accent font-black text-[11px] flex items-center justify-center shrink-0">
+                  {item.quantity}x
+                </span>
+                <span className="font-medium text-accent truncate">
+                  {locale === 'ar' ? item.nameAr : item.nameFr}
+                </span>
+              </div>
+              <span className="font-bold text-accent shrink-0">
+                {item.price * item.quantity} {tMenu('dzd')}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <form onSubmit={handleSubmit} className="bg-white rounded-2xl sm:rounded-card p-5 sm:p-7 border border-accent/10 shadow-sm space-y-6">
         {/* Customer Information */}
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-bold text-accent mb-1">{t('name')} *</label>
+            <label className="block text-xs sm:text-sm font-bold text-accent mb-1.5">
+              {t('name')} <span className="text-red-500">*</span>
+            </label>
             <input
               type="text"
               required
               placeholder={t('namePlaceholder')}
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-accent/20 focus:outline-hidden focus:border-primary font-medium text-accent"
+              className="w-full px-4 py-3 rounded-xl border border-accent/20 focus:outline-hidden focus:border-primary focus:ring-2 focus:ring-primary/20 font-medium text-accent text-base bg-cream/30"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-bold text-accent mb-1">{t('phone')} *</label>
+            <label className="block text-xs sm:text-sm font-bold text-accent mb-1.5">
+              {t('phone')} <span className="text-red-500">*</span>
+            </label>
             <input
               type="tel"
+              inputMode="tel"
               required
               placeholder={t('phonePlaceholder')}
               value={customerPhone}
               onChange={(e) => setCustomerPhone(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-accent/20 focus:outline-hidden focus:border-primary font-medium text-accent"
+              className="w-full px-4 py-3 rounded-xl border border-accent/20 focus:outline-hidden focus:border-primary focus:ring-2 focus:ring-primary/20 font-medium text-accent text-base bg-cream/30"
             />
           </div>
         </div>
 
         {/* Delivery Method */}
         <div className="space-y-2">
-          <label className="block text-sm font-bold text-accent">{t('deliveryMethod')}</label>
+          <label className="block text-xs sm:text-sm font-bold text-accent">{t('deliveryMethod')}</label>
           <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
               onClick={() => setDeliveryMethod('delivery')}
-              className={"p-3 rounded-xl border flex flex-col items-center gap-2 font-bold text-sm transition-all " + (
+              className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 font-bold text-xs sm:text-sm transition-all active:scale-95 ${
                 deliveryMethod === 'delivery'
-                  ? 'border-primary bg-primary/10 text-accent ring-2 ring-primary/40'
-                  : 'border-accent/20 text-accent/70 hover:bg-cream'
-              )}
+                  ? 'border-accent bg-primary/15 text-accent shadow-2xs'
+                  : 'border-accent/15 text-accent/70 hover:bg-cream'
+              }`}
             >
               <Truck className="w-5 h-5 text-accent" />
               <span>{t('delivery')}</span>
@@ -149,11 +200,11 @@ export default function CheckoutPage({ params: { locale } }: { params: { locale:
             <button
               type="button"
               onClick={() => setDeliveryMethod('pickup')}
-              className={"p-3 rounded-xl border flex flex-col items-center gap-2 font-bold text-sm transition-all " + (
+              className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 font-bold text-xs sm:text-sm transition-all active:scale-95 ${
                 deliveryMethod === 'pickup'
-                  ? 'border-primary bg-primary/10 text-accent ring-2 ring-primary/40'
-                  : 'border-accent/20 text-accent/70 hover:bg-cream'
-              )}
+                  ? 'border-accent bg-primary/15 text-accent shadow-2xs'
+                  : 'border-accent/15 text-accent/70 hover:bg-cream'
+              }`}
             >
               <Store className="w-5 h-5 text-accent" />
               <span>{t('pickup')}</span>
@@ -163,31 +214,33 @@ export default function CheckoutPage({ params: { locale } }: { params: { locale:
 
         {/* Address if delivery */}
         {deliveryMethod === 'delivery' && (
-          <div>
-            <label className="block text-sm font-bold text-accent mb-1">{t('address')} *</label>
+          <div className="animate-fadeIn">
+            <label className="block text-xs sm:text-sm font-bold text-accent mb-1.5">
+              {t('address')} <span className="text-red-500">*</span>
+            </label>
             <input
               type="text"
               required
               placeholder={t('addressPlaceholder')}
               value={customerAddress}
               onChange={(e) => setCustomerAddress(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-accent/20 focus:outline-hidden focus:border-primary font-medium text-accent"
+              className="w-full px-4 py-3 rounded-xl border border-accent/20 focus:outline-hidden focus:border-primary focus:ring-2 focus:ring-primary/20 font-medium text-accent text-base bg-cream/30"
             />
           </div>
         )}
 
         {/* Payment Method */}
         <div className="space-y-2">
-          <label className="block text-sm font-bold text-accent">{t('paymentMethod')}</label>
+          <label className="block text-xs sm:text-sm font-bold text-accent">{t('paymentMethod')}</label>
           <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
               onClick={() => setPaymentMethod('baridimob')}
-              className={"p-3 rounded-xl border flex flex-col items-center gap-2 font-bold text-sm transition-all " + (
+              className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 font-bold text-xs sm:text-sm transition-all active:scale-95 ${
                 paymentMethod === 'baridimob'
-                  ? 'border-primary bg-primary/10 text-accent ring-2 ring-primary/40'
-                  : 'border-accent/20 text-accent/70 hover:bg-cream'
-              )}
+                  ? 'border-accent bg-primary/15 text-accent shadow-2xs'
+                  : 'border-accent/15 text-accent/70 hover:bg-cream'
+              }`}
             >
               <CreditCard className="w-5 h-5 text-accent" />
               <span>{t('baridimob')}</span>
@@ -196,11 +249,11 @@ export default function CheckoutPage({ params: { locale } }: { params: { locale:
             <button
               type="button"
               onClick={() => setPaymentMethod('cash')}
-              className={"p-3 rounded-xl border flex flex-col items-center gap-2 font-bold text-sm transition-all " + (
+              className={`p-4 rounded-xl border-2 flex flex-col items-center gap-2 font-bold text-xs sm:text-sm transition-all active:scale-95 ${
                 paymentMethod === 'cash'
-                  ? 'border-primary bg-primary/10 text-accent ring-2 ring-primary/40'
-                  : 'border-accent/20 text-accent/70 hover:bg-cream'
-              )}
+                  ? 'border-accent bg-primary/15 text-accent shadow-2xs'
+                  : 'border-accent/15 text-accent/70 hover:bg-cream'
+              }`}
             >
               <Banknote className="w-5 h-5 text-accent" />
               <span>{t('cash')}</span>
@@ -210,27 +263,27 @@ export default function CheckoutPage({ params: { locale } }: { params: { locale:
 
         {/* Notes */}
         <div>
-          <label className="block text-sm font-bold text-accent mb-1">{t('note')}</label>
+          <label className="block text-xs sm:text-sm font-bold text-accent mb-1.5">{t('note')}</label>
           <textarea
             rows={2}
             placeholder={t('notePlaceholder')}
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            className="w-full px-4 py-2.5 rounded-xl border border-accent/20 focus:outline-hidden focus:border-primary font-medium text-accent"
+            className="w-full px-4 py-3 rounded-xl border border-accent/20 focus:outline-hidden focus:border-primary focus:ring-2 focus:ring-primary/20 font-medium text-accent text-base bg-cream/30"
           />
         </div>
 
         {/* Summary & Submit */}
         <div className="pt-4 border-t border-accent/10 space-y-4">
-          <div className="flex justify-between items-center text-lg font-black text-accent">
+          <div className="flex justify-between items-center text-lg sm:text-xl font-black text-accent">
             <span>{locale === 'ar' ? 'المبلغ الإجمالي:' : 'Total à payer :'}</span>
-            <span>{totalPrice()} دج</span>
+            <span>{totalPrice()} {tMenu('dzd')}</span>
           </div>
 
           <button
             type="submit"
             disabled={submitting}
-            className="w-full bg-accent hover:bg-accent/90 text-cream font-black py-4 px-6 rounded-xl flex items-center justify-center gap-2 text-base shadow-lg transition-all active:scale-[0.98] disabled:opacity-50"
+            className="w-full bg-accent hover:bg-accent/90 text-cream font-black py-4 px-6 rounded-2xl flex items-center justify-center gap-2 text-base shadow-lg transition-all active:scale-[0.98] disabled:opacity-50 cursor-pointer"
           >
             {submitting ? (
               <>

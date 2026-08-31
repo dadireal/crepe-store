@@ -8,17 +8,77 @@
   --primary: #E8A87C;
   --accent: #5C3D2E;
   --cream: #FFF8F0;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
 }
 
 body {
   background-color: var(--cream);
   color: var(--accent);
+  overflow-x: hidden;
+  min-height: 100vh;
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Safe area padding utilities for iOS / modern edge-to-edge screens */
+.pb-safe {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom, 1rem));
+}
+
+.pt-safe {
+  padding-top: max(1rem, env(safe-area-inset-top, 1rem));
+}
+
+.mb-safe {
+  margin-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .font-cairo {
-  font-family: 'Cairo', sans-serif;
+  font-family: 'Cairo', system-ui, -apple-system, sans-serif;
 }
 
 .font-poppins {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+}
+
+/* Ensure mobile form inputs don't trigger iOS Safari automatic zooming */
+@media screen and (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--cream);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(92, 61, 46, 0.2);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(92, 61, 46, 0.4);
+}
+
+/* Smooth Touch Interactions */
+button, a {
+  touch-action: manipulation;
 }

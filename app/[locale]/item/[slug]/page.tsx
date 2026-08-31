@@ -20,22 +20,28 @@ export default async function ProductDetailPage({
     notFound();
   }
 
+  const isRtl = locale === 'ar';
+  const name = isRtl ? product.nameAr : product.nameFr;
+
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+    <div className="max-w-4xl mx-auto px-4 py-6 sm:py-10 space-y-5 sm:space-y-6">
+      {/* Back button */}
       <Link
         href={`/${locale}/menu`}
-        className="inline-flex items-center gap-2 text-sm font-bold text-accent/70 hover:text-accent transition-colors"
+        className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-accent/80 hover:text-accent transition-colors bg-white px-3.5 py-2 rounded-xl border border-accent/15 shadow-2xs active:scale-95"
       >
-        {locale === 'ar' ? <ArrowRight className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />}
-        <span>{locale === 'ar' ? 'العودة للقائمة' : 'Retour au menu'}</span>
+        {isRtl ? <ArrowRight className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />}
+        <span>{isRtl ? 'العودة للقائمة' : 'Retour au menu'}</span>
       </Link>
 
-      <div className="bg-white rounded-card border border-accent/10 shadow-sm overflow-hidden grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
-        <div className="relative h-72 md:h-96 rounded-xl overflow-hidden bg-accent/5">
+      {/* Main card */}
+      <div className="bg-white rounded-2xl sm:rounded-card border border-accent/10 shadow-sm overflow-hidden grid grid-cols-1 md:grid-cols-2 gap-6 p-4 sm:p-6 md:p-8">
+        <div className="relative aspect-4/3 md:aspect-auto md:h-full min-h-[260px] sm:min-h-[320px] rounded-xl sm:rounded-2xl overflow-hidden bg-accent/5">
           <Image
             src={product.image}
-            alt={locale === 'ar' ? product.nameAr : product.nameFr}
+            alt={name}
             fill
+            priority
             sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover"
           />

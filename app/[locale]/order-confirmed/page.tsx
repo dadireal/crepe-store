@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-import { CheckCircle2, MessageCircle, Home, Loader2 } from 'lucide-react';
+import { CheckCircle2, MessageCircle, Home, Loader2, Sparkles } from 'lucide-react';
 
 export default function OrderConfirmedPage({ params: { locale } }: { params: { locale: string } }) {
   const t = useTranslations('confirmation');
@@ -40,32 +40,39 @@ export default function OrderConfirmedPage({ params: { locale } }: { params: { l
   }, [orderId]);
 
   return (
-    <div className="max-w-xl mx-auto px-4 py-16 text-center space-y-6">
-      <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
-        <CheckCircle2 className="w-12 h-12" />
+    <div className="max-w-lg mx-auto px-4 py-10 sm:py-16 text-center space-y-6">
+      {/* Animated Success Badge */}
+      <div className="w-20 h-20 sm:w-24 sm:h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner animate-bounce">
+        <CheckCircle2 className="w-12 h-12 sm:w-14 sm:h-14" />
       </div>
 
       <div className="space-y-2">
-        <h1 className="text-3xl font-black text-accent">{t('title')}</h1>
-        <p className="text-accent/80 font-medium">{t('message')}</p>
+        <h1 className="text-2xl sm:text-3xl font-black text-accent tracking-tight">{t('title')}</h1>
+        <p className="text-sm sm:text-base text-accent/80 font-medium px-2 leading-relaxed">
+          {t('message')}
+        </p>
       </div>
 
       {orderId && (
-        <div className="bg-white p-4 rounded-xl border border-accent/10 inline-block shadow-xs">
-          <p className="text-xs text-accent/70 font-bold">{t('orderRef')}</p>
-          <p className="text-xl font-black text-primary font-mono mt-1">#{orderId.slice(-6).toUpperCase()}</p>
+        <div className="bg-white p-5 rounded-2xl border border-accent/10 shadow-2xs inline-block min-w-[220px]">
+          <p className="text-xs text-accent/70 font-bold uppercase tracking-wider">{t('orderRef')}</p>
+          <p className="text-2xl font-black text-primary font-mono mt-1 tracking-wider">
+            #{orderId.slice(-6).toUpperCase()}
+          </p>
         </div>
       )}
 
-      <div className="bg-primary/10 p-4 rounded-xl border border-primary/30 text-accent text-sm font-semibold">
+      {/* Payment info banner */}
+      <div className="bg-primary/15 p-4 rounded-2xl border border-primary/30 text-accent text-xs sm:text-sm font-semibold leading-relaxed">
         {locale === 'ar'
-          ? '💳 إذا اخترت بريدي موب، سنرسل لك معلومات الدفع عبر واتساب لتأكيد طلبك.'
+          ? '💳 إذا اخترت بريدي موب، سنرسل لك معلومات الدفع عبر واتساب لتأكيد طلبك وتجهيزه فوراً.'
           : '💳 Si vous avez choisi BaridiMob, nous vous enverrons les coordonnées de paiement par WhatsApp pour valider votre commande.'}
       </div>
 
-      <div className="pt-4 flex flex-col sm:flex-row gap-3 justify-center">
+      {/* Action Buttons */}
+      <div className="pt-2 flex flex-col sm:flex-row gap-3 justify-center max-w-md mx-auto">
         {loading ? (
-          <div className="bg-green-600 text-white font-bold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 shadow-md opacity-75">
+          <div className="bg-emerald-600 text-white font-black py-4 px-6 rounded-2xl flex items-center justify-center gap-2 shadow-md opacity-80 text-base">
             <Loader2 className="w-5 h-5 animate-spin" />
             <span>{t('whatsapp')}</span>
           </div>
@@ -74,7 +81,7 @@ export default function OrderConfirmedPage({ params: { locale } }: { params: { l
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 text-base"
+            className="bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 px-6 rounded-2xl flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all active:scale-95 text-base cursor-pointer"
           >
             <MessageCircle className="w-5 h-5" />
             <span>{t('whatsapp')}</span>
@@ -83,7 +90,7 @@ export default function OrderConfirmedPage({ params: { locale } }: { params: { l
 
         <Link
           href={`/${locale}`}
-          className="bg-accent text-cream hover:bg-accent/90 font-bold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 shadow-sm transition-all"
+          className="bg-accent text-cream hover:bg-accent/90 font-black py-4 px-6 rounded-2xl flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 text-base"
         >
           <Home className="w-5 h-5" />
           <span>{t('backHome')}</span>

@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
 import Navbar from '@/components/Navbar';
+import MobileNav from '@/components/MobileNav';
 import CartDrawer from '@/components/CartDrawer';
 import { locales } from '@/i18n';
 
@@ -14,7 +15,7 @@ export function generateStaticParams() {
 
 export default async function LocaleLayout({
   children,
-  params: { locale }
+  params: { locale },
 }: {
   children: ReactNode;
   params: { locale: string };
@@ -40,8 +41,9 @@ export default async function LocaleLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Navbar locale={locale} />
           <CartDrawer locale={locale} />
-          <main className="flex-grow">{children}</main>
-          <footer className="bg-accent text-cream/90 py-8 px-4 text-center mt-12 border-t border-accent/20">
+          <main className="flex-grow pb-20 md:pb-8">{children}</main>
+          <MobileNav locale={locale} />
+          <footer className="bg-accent text-cream/90 py-8 px-4 text-center border-t border-accent/20 pb-24 md:pb-8">
             <div className="max-w-4xl mx-auto space-y-2">
               <p className="font-bold text-lg text-primary">🥞 Crepe Store | كريب بيتي</p>
               <p className="text-sm text-cream/70">

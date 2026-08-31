@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
-import { Plus, Trash2, Edit2, ArrowLeft, ArrowRight, Loader2 } from 'lucide-react';
+import { Plus, ArrowLeft, ArrowRight, Loader2, X } from 'lucide-react';
 
 export default function AdminProductsPage({ params: { locale } }: { params: { locale: string } }) {
   const t = useTranslations('admin');
@@ -18,9 +18,11 @@ export default function AdminProductsPage({ params: { locale } }: { params: { lo
     descAr: '',
     descFr: '',
     price: 350,
-    image: 'https://images.unsplash.com/photo-1519676867240-f03562e64548?w=800&auto=format&fit=crop&q=80',
+    image: '/images/crepe-1.jpeg',
     available: true,
   });
+
+  const isRtl = locale === 'ar';
 
   const loadProducts = async () => {
     try {
@@ -55,7 +57,7 @@ export default function AdminProductsPage({ params: { locale } }: { params: { lo
           descAr: '',
           descFr: '',
           price: 350,
-          image: 'https://images.unsplash.com/photo-1519676867240-f03562e64548?w=800&auto=format&fit=crop&q=80',
+          image: '/images/crepe-1.jpeg',
           available: true,
         });
         loadProducts();
@@ -66,136 +68,156 @@ export default function AdminProductsPage({ params: { locale } }: { params: { lo
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
+    <div className="max-w-6xl mx-auto px-3 sm:px-4 py-6 sm:py-8 space-y-6">
+      {/* Top Header */}
+      <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-4 sm:p-5 rounded-2xl border border-accent/10 shadow-2xs">
+        <div className="flex items-center gap-3">
           <Link
-            href={"/" + locale + "/admin/orders"}
-            className="text-xs font-bold text-accent/70 hover:text-accent flex items-center gap-1"
+            href={`/${locale}/admin/orders`}
+            className="text-xs font-bold text-accent/70 hover:text-accent flex items-center gap-1 bg-cream px-3 py-2 rounded-xl border border-accent/10 active:scale-95 transition-all"
           >
-            {locale === 'ar' ? <ArrowRight className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />}
+            {isRtl ? <ArrowRight className="w-3.5 h-3.5" /> : <ArrowLeft className="w-3.5 h-3.5" />}
             <span>{t('orders')}</span>
           </Link>
-          <h1 className="text-2xl font-black text-accent">{t('products')}</h1>
+          <h1 className="text-xl sm:text-2xl font-black text-accent">{t('products')}</h1>
         </div>
 
         <button
+          type="button"
           onClick={() => setShowModal(true)}
-          className="bg-accent hover:bg-accent/90 text-cream px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm"
+          className="bg-accent hover:bg-accent/90 text-cream px-4 py-2.5 rounded-xl text-xs sm:text-sm font-black flex items-center gap-1.5 shadow-md active:scale-95 transition-all cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>{t('addProduct')}</span>
         </button>
       </div>
 
+      {/* Grid */}
       {loading ? (
-        <div className="text-center py-16">
+        <div className="text-center py-20">
           <Loader2 className="w-8 h-8 animate-spin mx-auto text-accent/40" />
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {products.map((p) => (
-            <div key={p.id} className="bg-white rounded-xl p-4 border border-accent/10 shadow-xs space-y-3">
-              <div className="relative h-36 rounded-lg overflow-hidden bg-accent/5">
+            <div key={p.id} className="bg-white rounded-2xl p-4 border border-accent/10 shadow-2xs space-y-3">
+              <div className="relative h-40 rounded-xl overflow-hidden bg-accent/5">
                 <Image src={p.image} alt={p.nameAr} fill className="object-cover" />
               </div>
               <div>
-                <h3 className="font-bold text-accent text-sm">{p.nameAr} / {p.nameFr}</h3>
-                <p className="text-xs font-extrabold text-primary mt-1">{p.price} دج</p>
+                <h3 className="font-bold text-accent text-sm sm:text-base leading-snug">{p.nameAr}</h3>
+                <p className="text-xs text-accent/60 mt-0.5">{p.nameFr}</p>
+                <p className="text-sm font-black text-primary mt-2">{p.price} دج</p>
               </div>
             </div>
           ))}
         </div>
       )}
 
+      {/* Responsive Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-card p-6 max-w-lg w-full space-y-4">
-            <h2 className="text-lg font-black text-accent">{t('addProduct')}</h2>
-            <form onSubmit={handleSubmit} className="space-y-3 text-xs">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+          <div className="bg-white rounded-2xl p-5 sm:p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto space-y-4 shadow-2xl my-auto">
+            <div className="flex items-center justify-between pb-2 border-b border-accent/10">
+              <h2 className="text-lg font-black text-accent">{t('addProduct')}</h2>
+              <button
+                type="button"
+                onClick={() => setShowModal(false)}
+                className="w-8 h-8 rounded-full hover:bg-cream flex items-center justify-center text-accent"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-3.5 text-xs sm:text-sm">
               <div>
-                <label className="block font-bold mb-1">Slug (e.g. crepe-caramel)</label>
+                <label className="block font-bold mb-1 text-accent">Slug (e.g. crepe-caramel)</label>
                 <input
                   type="text"
                   required
                   value={form.slug}
                   onChange={(e) => setForm({ ...form, slug: e.target.value })}
-                  className="w-full p-2 border rounded-lg font-mono"
+                  className="w-full p-2.5 border rounded-xl font-mono text-accent bg-cream/30"
                 />
               </div>
-              <div className="grid grid-cols-2 gap-2">
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-bold mb-1">الاسم بالعربية</label>
+                  <label className="block font-bold mb-1 text-accent">الاسم بالعربية</label>
                   <input
                     type="text"
                     required
                     value={form.nameAr}
                     onChange={(e) => setForm({ ...form, nameAr: e.target.value })}
-                    className="w-full p-2 border rounded-lg"
+                    className="w-full p-2.5 border rounded-xl text-accent bg-cream/30"
                   />
                 </div>
                 <div>
-                  <label className="block font-bold mb-1">Nom en Français</label>
+                  <label className="block font-bold mb-1 text-accent">Nom en Français</label>
                   <input
                     type="text"
                     required
                     value={form.nameFr}
                     onChange={(e) => setForm({ ...form, nameFr: e.target.value })}
-                    className="w-full p-2 border rounded-lg"
+                    className="w-full p-2.5 border rounded-xl text-accent bg-cream/30"
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-2">
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-bold mb-1">الوصف بالعربية</label>
+                  <label className="block font-bold mb-1 text-accent">الوصف بالعربية</label>
                   <textarea
                     rows={2}
                     value={form.descAr}
                     onChange={(e) => setForm({ ...form, descAr: e.target.value })}
-                    className="w-full p-2 border rounded-lg"
+                    className="w-full p-2.5 border rounded-xl text-accent bg-cream/30"
                   />
                 </div>
                 <div>
-                  <label className="block font-bold mb-1">Description en Français</label>
+                  <label className="block font-bold mb-1 text-accent">Description en Français</label>
                   <textarea
                     rows={2}
                     value={form.descFr}
                     onChange={(e) => setForm({ ...form, descFr: e.target.value })}
-                    className="w-full p-2 border rounded-lg"
+                    className="w-full p-2.5 border rounded-xl text-accent bg-cream/30"
                   />
                 </div>
               </div>
+
               <div>
-                <label className="block font-bold mb-1">السعر (DZD)</label>
+                <label className="block font-bold mb-1 text-accent">السعر (DZD)</label>
                 <input
                   type="number"
                   required
                   value={form.price}
                   onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
-                  className="w-full p-2 border rounded-lg"
+                  className="w-full p-2.5 border rounded-xl text-accent bg-cream/30"
                 />
               </div>
+
               <div>
-                <label className="block font-bold mb-1">رابط الصورة (Image URL)</label>
+                <label className="block font-bold mb-1 text-accent">رابط الصورة (Image URL / path)</label>
                 <input
-                  type="url"
+                  type="text"
                   required
                   value={form.image}
                   onChange={(e) => setForm({ ...form, image: e.target.value })}
-                  className="w-full p-2 border rounded-lg"
+                  className="w-full p-2.5 border rounded-xl text-accent bg-cream/30"
                 />
               </div>
-              <div className="flex justify-end gap-2 pt-2">
+
+              <div className="flex justify-end gap-2 pt-3 border-t border-accent/10">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="px-4 py-2 border rounded-lg font-bold"
+                  className="px-4 py-2.5 border border-accent/20 rounded-xl font-bold text-accent hover:bg-cream active:scale-95"
                 >
                   {t('cancel')}
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-accent text-cream rounded-lg font-bold"
+                  className="px-5 py-2.5 bg-accent text-cream rounded-xl font-bold shadow-md hover:bg-accent/90 active:scale-95"
                 >
                   {t('save')}
                 </button>
