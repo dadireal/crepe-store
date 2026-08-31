@@ -75,31 +75,51 @@ function ImageUploader({
         setUploadError(isRtl ? 'نوع الملف غير مدعوم. استخدم JPEG أو PNG أو WEBP.' : 'Type de fichier non pris en charge. Utilisez JPEG, PNG ou WEBP.');
         return;
       }
-      if (file.size > 5 * 1024 * 1024) {
-        setUploadError(isRtl ? 'الملف كبير جداً. الحد الأقصى 5 ميغابايت.' : 'Fichier trop volumineux. Maximum 5 Mo.');
+      if (file.size > 10 * 1024 * 1024) {
+        setUploadError(isRtl ? 'الملف كبير جداً. الحد الأقصى 10 ميغابايت.' : 'Fichier trop volumineux. Maximum 10 Mo.');
         return;
       }
 
-      // Optimistic preview using blob URL
+      const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+      const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+
+      if (!cloudName || !uploadPreset) {
+        setUploadError(
+          isRtl
+            ? '⚙️ يجب إعداد Cloudinary أولاً — أضف NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME و NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET إلى .env'
+            : '⚙️ Cloudinary non configuré — ajoutez NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME et NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET dans .env'
+        );
+        return;
+      }
+
+      // Show instant local preview while uploading
       const blobUrl = URL.createObjectURL(file);
       onChange(blobUrl);
       setUploading(true);
 
       try {
+        // Upload directly from browser → Cloudinary CDN (works on Vercel, no filesystem needed)
         const fd = new FormData();
         fd.append('file', file);
+        fd.append('upload_preset', uploadPreset);
+        fd.append('folder', 'crepe-store');
 
-        const res = await fetch('/api/upload', { method: 'POST', body: fd });
+        const res = await fetch(
+          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+          { method: 'POST', body: fd }
+        );
         const data = await res.json();
 
-        if (!res.ok) throw new Error(data.error || 'Upload failed');
+        if (!res.ok || data.error) {
+          throw new Error(data.error?.message || 'Cloudinary upload failed');
+        }
 
-        // Replace blob URL with real URL
+        // Replace blob preview with real CDN URL
         URL.revokeObjectURL(blobUrl);
-        onChange(data.url);
+        onChange(data.secure_url);
       } catch (err: any) {
         URL.revokeObjectURL(blobUrl);
-        onChange(value); // revert
+        onChange(value); // revert on error
         setUploadError(err.message);
       } finally {
         setUploading(false);
