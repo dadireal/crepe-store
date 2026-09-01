@@ -50,7 +50,7 @@ export default async function LocaleLayout({
                 {locale === 'ar' ? 'أشهى كريب حلو طازج محضر بأجود المكونات' : 'Délicieuses crêpes sucrées faites maison avec amour'}
               </p>
               <p className="text-xs text-cream/50 pt-2">
-                © {new Date().getFullYear()} All Rights Reserved | 📱 0550 92 62 71
+                © {new Date().getFullYear()} All Rights Reserved | 📱 0553 44 02 29
               </p>
             </div>
           </footer>
