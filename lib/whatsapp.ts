@@ -18,12 +18,12 @@ export function buildWhatsAppUrl(order: WhatsAppOrderDetails): string {
     .map((item) => `- ${item.name} x${item.quantity} (${item.price * item.quantity} دج)`)
     .join('\n');
 
-  const deliveryText = order.deliveryMethod === 'delivery' 
-    ? `*طريقة الاستلام:* توصيل للمنزل (${order.customerAddress || 'عنوان العميل'})` 
+  const deliveryText = order.deliveryMethod === 'delivery'
+    ? `*طريقة الاستلام:* توصيل للمنزل (${order.customerAddress || 'عنوان العميل'})`
     : '*طريقة الاستلام:* استلام من المحل';
 
-  const paymentText = order.paymentMethod === 'baridimob' 
-    ? '*طريقة الدفع:* بريدي موب (BaridiMob)' 
+  const paymentText = order.paymentMethod === 'baridimob'
+    ? '*طريقة الدفع:* بريدي موب (BaridiMob)'
     : '*طريقة الدفع:* دفع نقداً (Main à main)';
 
   const shortId = order.id.slice(-6).toUpperCase();

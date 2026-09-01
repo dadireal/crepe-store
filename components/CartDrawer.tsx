@@ -37,9 +37,8 @@ export default function CartDrawer({ locale }: { locale: string }) {
 
       {/* Drawer Container */}
       <div
-        className={`fixed inset-y-0 ${
-          isRtl ? 'left-0' : 'right-0'
-        } w-full sm:max-w-md bg-cream shadow-2xl flex flex-col z-50 transition-transform duration-300 ease-out`}
+        className={`fixed inset-y-0 ${isRtl ? 'left-0' : 'right-0'
+          } w-full sm:max-w-md bg-cream shadow-2xl flex flex-col z-50 transition-transform duration-300 ease-out`}
       >
         {/* Header */}
         <div className="p-4 border-b border-accent/10 flex items-center justify-between bg-white/80 backdrop-blur-xs">

@@ -29,9 +29,8 @@ export default function MobileNav({ locale }: { locale: string }) {
         {/* Home */}
         <Link
           href={`/${locale}`}
-          className={`flex flex-col items-center justify-center gap-1 py-1 px-2 rounded-xl transition-all active:scale-95 ${
-            isHome ? 'text-primary font-bold' : 'text-accent/70 hover:text-accent font-medium'
-          }`}
+          className={`flex flex-col items-center justify-center gap-1 py-1 px-2 rounded-xl transition-all active:scale-95 ${isHome ? 'text-primary font-bold' : 'text-accent/70 hover:text-accent font-medium'
+            }`}
         >
           <Home className={`w-5 h-5 ${isHome ? 'stroke-[2.5]' : ''}`} />
           <span className="text-[10px] leading-tight truncate">{t('home')}</span>
@@ -40,9 +39,8 @@ export default function MobileNav({ locale }: { locale: string }) {
         {/* Menu */}
         <Link
           href={`/${locale}/menu`}
-          className={`flex flex-col items-center justify-center gap-1 py-1 px-2 rounded-xl transition-all active:scale-95 ${
-            isMenu ? 'text-primary font-bold' : 'text-accent/70 hover:text-accent font-medium'
-          }`}
+          className={`flex flex-col items-center justify-center gap-1 py-1 px-2 rounded-xl transition-all active:scale-95 ${isMenu ? 'text-primary font-bold' : 'text-accent/70 hover:text-accent font-medium'
+            }`}
         >
           <UtensilsCrossed className={`w-5 h-5 ${isMenu ? 'stroke-[2.5]' : ''}`} />
           <span className="text-[10px] leading-tight truncate">{t('menu')}</span>

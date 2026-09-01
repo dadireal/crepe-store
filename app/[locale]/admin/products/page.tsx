@@ -49,8 +49,31 @@ const emptyForm = {
 };
 
 /* ───────────────────────────────────────────────
-   ImageUploader sub-component
+   Browser-side image compressor → base64
+   No accounts / no API keys needed
 ─────────────────────────────────────────────── */
+function compressImageToBase64(file: File, maxWidth = 900, quality = 0.78): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const img = new window.Image();
+    const blobUrl = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(blobUrl);
+      const scale = Math.min(1, maxWidth / img.width);
+      const w = Math.round(img.width * scale);
+      const h = Math.round(img.height * scale);
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return reject(new Error('Canvas not supported'));
+      ctx.drawImage(img, 0, 0, w, h);
+      resolve(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.onerror = () => { URL.revokeObjectURL(blobUrl); reject(new Error('Failed to load image')); };
+    img.src = blobUrl;
+  });
+}
+
 function ImageUploader({
   value,
   onChange,
@@ -60,72 +83,43 @@ function ImageUploader({
   onChange: (url: string) => void;
   locale: string;
 }) {
-  const [uploading, setUploading] = useState(false);
+  const [processing, setProcessing] = useState(false);
   const [uploadError, setUploadError] = useState('');
   const [dragOver, setDragOver] = useState(false);
   const [inputMode, setInputMode] = useState<'upload' | 'url'>('upload');
+  const [sizeInfo, setSizeInfo] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const isRtl = locale === 'ar';
 
   const handleFile = useCallback(
     async (file: File) => {
       setUploadError('');
-      const allowed = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
-      if (!allowed.includes(file.type)) {
-        setUploadError(isRtl ? 'نوع الملف غير مدعوم. استخدم JPEG أو PNG أو WEBP.' : 'Type de fichier non pris en charge. Utilisez JPEG, PNG ou WEBP.');
+      setSizeInfo('');
+      const allowed = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif', 'image/heic', 'image/heif'];
+      const isAllowed = allowed.includes(file.type) || file.name.match(/\.(jpe?g|png|webp|gif|heic|heif)$/i);
+      if (!isAllowed) {
+        setUploadError(isRtl ? 'نوع الملف غير مدعوم. استخدم JPEG أو PNG.' : 'Format non supporté. Utilisez JPEG ou PNG.');
         return;
       }
-      if (file.size > 10 * 1024 * 1024) {
-        setUploadError(isRtl ? 'الملف كبير جداً. الحد الأقصى 10 ميغابايت.' : 'Fichier trop volumineux. Maximum 10 Mo.');
-        return;
-      }
-
-      const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-      const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
-
-      if (!cloudName || !uploadPreset) {
-        setUploadError(
-          isRtl
-            ? '⚙️ يجب إعداد Cloudinary أولاً — أضف NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME و NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET إلى .env'
-            : '⚙️ Cloudinary non configuré — ajoutez NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME et NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET dans .env'
-        );
+      if (file.size > 20 * 1024 * 1024) {
+        setUploadError(isRtl ? 'الملف كبير جداً. الحد الأقصى 20 ميغابايت.' : 'Trop volumineux. Maximum 20 Mo.');
         return;
       }
 
-      // Show instant local preview while uploading
-      const blobUrl = URL.createObjectURL(file);
-      onChange(blobUrl);
-      setUploading(true);
-
+      setProcessing(true);
       try {
-        // Upload directly from browser → Cloudinary CDN (works on Vercel, no filesystem needed)
-        const fd = new FormData();
-        fd.append('file', file);
-        fd.append('upload_preset', uploadPreset);
-        fd.append('folder', 'crepe-store');
-
-        const res = await fetch(
-          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-          { method: 'POST', body: fd }
-        );
-        const data = await res.json();
-
-        if (!res.ok || data.error) {
-          throw new Error(data.error?.message || 'Cloudinary upload failed');
-        }
-
-        // Replace blob preview with real CDN URL
-        URL.revokeObjectURL(blobUrl);
-        onChange(data.secure_url);
+        // Compress in browser → small base64 JPEG (no server, no account)
+        const base64 = await compressImageToBase64(file, 900, 0.78);
+        const kb = Math.round(base64.length * 0.75 / 1024);
+        setSizeInfo(isRtl ? `✅ تم الضغط إلى ${kb} KB` : `✅ Compressé en ${kb} Ko`);
+        onChange(base64);
       } catch (err: any) {
-        URL.revokeObjectURL(blobUrl);
-        onChange(value); // revert on error
         setUploadError(err.message);
       } finally {
-        setUploading(false);
+        setProcessing(false);
       }
     },
-    [onChange, isRtl, value]
+    [onChange, isRtl]
   );
 
   const onDrop = useCallback(
@@ -141,10 +135,10 @@ function ImageUploader({
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) handleFile(file);
-    // reset so same file can be re-selected
     e.target.value = '';
   };
 
+  const isDataUrl = value?.startsWith('data:');
   const hasImage = value && value !== '/images/crepe-1.jpeg';
 
   return (
@@ -154,23 +148,17 @@ function ImageUploader({
         <button
           type="button"
           onClick={() => setInputMode('upload')}
-          className={`flex-1 py-2 flex items-center justify-center gap-1.5 transition-colors ${
-            inputMode === 'upload'
-              ? 'bg-accent text-cream'
-              : 'bg-cream/40 text-accent/70 hover:bg-cream'
-          }`}
+          className={`flex-1 py-2 flex items-center justify-center gap-1.5 transition-colors ${inputMode === 'upload' ? 'bg-accent text-cream' : 'bg-cream/40 text-accent/70 hover:bg-cream'
+            }`}
         >
           <Upload className="w-3.5 h-3.5" />
-          {isRtl ? 'رفع صورة' : 'Télécharger'}
+          {isRtl ? 'رفع صورة 📷' : 'Télécharger 📷'}
         </button>
         <button
           type="button"
           onClick={() => setInputMode('url')}
-          className={`flex-1 py-2 flex items-center justify-center gap-1.5 transition-colors ${
-            inputMode === 'url'
-              ? 'bg-accent text-cream'
-              : 'bg-cream/40 text-accent/70 hover:bg-cream'
-          }`}
+          className={`flex-1 py-2 flex items-center justify-center gap-1.5 transition-colors ${inputMode === 'url' ? 'bg-accent text-cream' : 'bg-cream/40 text-accent/70 hover:bg-cream'
+            }`}
         >
           <Link2 className="w-3.5 h-3.5" />
           {isRtl ? 'رابط URL' : 'URL / Lien'}
@@ -179,53 +167,46 @@ function ImageUploader({
 
       {inputMode === 'upload' ? (
         <>
-          {/* Drop Zone */}
+          {/* Drop Zone / Preview */}
           <div
             onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
             onDragLeave={() => setDragOver(false)}
             onDrop={onDrop}
-            onClick={() => fileInputRef.current?.click()}
-            className={`relative cursor-pointer rounded-2xl border-2 border-dashed transition-all overflow-hidden
-              ${dragOver
-                ? 'border-primary bg-primary/10 scale-[1.01]'
-                : 'border-accent/25 hover:border-primary/60 hover:bg-cream/70'
+            onClick={() => {
+              if (fileInputRef.current) {
+                fileInputRef.current.removeAttribute('capture');
+                fileInputRef.current.click();
               }
-              ${hasImage ? 'h-48' : 'h-36 bg-cream/30'}
+            }}
+            className={`relative cursor-pointer rounded-2xl border-2 border-dashed transition-all overflow-hidden
+              ${dragOver ? 'border-primary bg-primary/10 scale-[1.01]' : 'border-accent/25 hover:border-primary/60 hover:bg-cream/70'}
+              ${hasImage ? 'h-52' : 'h-40 bg-cream/30'}
             `}
           >
-            {/* Preview */}
+            {/* Preview image */}
             {hasImage && (
-              <Image
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
                 src={value}
                 alt="preview"
-                fill
-                sizes="100vw"
-                className="object-cover opacity-80"
-                unoptimized={value.startsWith('blob:')}
+                className="w-full h-full object-cover opacity-85"
               />
             )}
 
-            {/* Overlay UI */}
-            <div
-              className={`absolute inset-0 flex flex-col items-center justify-center gap-2 transition-opacity
-                ${hasImage ? 'bg-black/40 opacity-0 hover:opacity-100' : 'bg-transparent opacity-100'}
-              `}
-            >
-              {uploading ? (
+            {/* Overlay */}
+            <div className={`absolute inset-0 flex flex-col items-center justify-center gap-2 transition-opacity ${hasImage ? 'bg-black/45 opacity-0 hover:opacity-100' : 'opacity-100'
+              }`}>
+              {processing ? (
                 <>
-                  <Loader2 className="w-7 h-7 animate-spin text-white drop-shadow" />
+                  <Loader2 className="w-8 h-8 animate-spin text-white drop-shadow-md" />
                   <span className="text-xs font-bold text-white drop-shadow">
-                    {isRtl ? 'جارٍ الرفع...' : 'Envoi en cours...'}
+                    {isRtl ? 'جارٍ الضغط...' : 'Compression...'}
                   </span>
                 </>
               ) : (
                 <>
-                  <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-lg">
-                    {hasImage ? (
-                      <Camera className="w-5 h-5 text-white" />
-                    ) : (
-                      <ImageIcon className="w-5 h-5 text-accent/60" />
-                    )}
+                  <div className="w-12 h-12 rounded-full bg-white/25 backdrop-blur-sm flex items-center justify-center shadow-lg">
+                    {hasImage ? <Camera className="w-5 h-5 text-white" /> : <ImageIcon className="w-5 h-5 text-accent/50" />}
                   </div>
                   <div className="text-center px-4">
                     <p className={`text-xs font-bold ${hasImage ? 'text-white drop-shadow' : 'text-accent/70'}`}>
@@ -234,8 +215,8 @@ function ImageUploader({
                         : (isRtl ? 'انقر أو اسحب صورة هنا' : 'Cliquez ou glissez une image ici')}
                     </p>
                     {!hasImage && (
-                      <p className="text-[10px] text-accent/50 mt-0.5">
-                        JPEG, PNG, WEBP — {isRtl ? 'حتى 5MB' : 'max 5 Mo'}
+                      <p className="text-[10px] text-accent/45 mt-1">
+                        {isRtl ? 'يتم ضغط الصورة تلقائياً — لا حاجة لإعداد أي شيء' : 'Compression automatique — aucune configuration requise'}
                       </p>
                     )}
                   </div>
@@ -243,15 +224,7 @@ function ImageUploader({
               )}
             </div>
 
-            {/* Hidden real file input — accept from camera & files */}
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              capture="environment"
-              onChange={onFileChange}
-              className="hidden"
-            />
+            <input ref={fileInputRef} type="file" accept="image/*" onChange={onFileChange} className="hidden" />
           </div>
 
           {/* Action buttons */}
@@ -264,10 +237,10 @@ function ImageUploader({
                   fileInputRef.current.click();
                 }
               }}
-              className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-bold rounded-xl bg-cream border border-accent/20 text-accent hover:bg-accent/5 active:scale-95 transition-all"
+              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-bold rounded-xl bg-cream border border-accent/20 text-accent hover:bg-accent/5 active:scale-95 transition-all"
             >
               <Upload className="w-3.5 h-3.5" />
-              {isRtl ? 'من الجهاز' : 'Depuis l\'appareil'}
+              {isRtl ? '📁 من الجهاز' : '📁 Depuis l\'appareil'}
             </button>
             <button
               type="button"
@@ -277,22 +250,24 @@ function ImageUploader({
                   fileInputRef.current.click();
                 }
               }}
-              className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-bold rounded-xl bg-cream border border-accent/20 text-accent hover:bg-accent/5 active:scale-95 transition-all"
+              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-bold rounded-xl bg-cream border border-accent/20 text-accent hover:bg-accent/5 active:scale-95 transition-all"
             >
               <Camera className="w-3.5 h-3.5" />
-              {isRtl ? 'الكاميرا' : 'Caméra'}
+              {isRtl ? '📸 الكاميرا' : '📸 Caméra'}
             </button>
             {hasImage && (
               <button
                 type="button"
-                onClick={() => onChange('/images/crepe-1.jpeg')}
-                className="px-3 py-2 text-xs font-bold rounded-xl bg-red-50 border border-red-200 text-red-600 hover:bg-red-100 active:scale-95 transition-all"
-                title={isRtl ? 'حذف الصورة' : 'Supprimer'}
+                onClick={() => { onChange('/images/crepe-1.jpeg'); setSizeInfo(''); }}
+                className="px-3 py-2 text-xs rounded-xl bg-red-50 border border-red-200 text-red-600 hover:bg-red-100 active:scale-95 transition-all"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
             )}
           </div>
+
+          {/* Size info */}
+          {sizeInfo && <p className="text-xs font-bold text-emerald-600">{sizeInfo}</p>}
         </>
       ) : (
         /* URL Mode */
@@ -306,14 +281,8 @@ function ImageUploader({
           />
           {value && (
             <div className="relative h-36 rounded-xl overflow-hidden border border-accent/20 bg-accent/5">
-              <Image
-                src={value}
-                alt="preview"
-                fill
-                sizes="100vw"
-                className="object-cover"
-                unoptimized
-              />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={value} alt="preview" className="w-full h-full object-cover" />
             </div>
           )}
         </div>
@@ -332,6 +301,7 @@ function ImageUploader({
 /* ───────────────────────────────────────────────
    Main Page
 ─────────────────────────────────────────────── */
+
 export default function AdminProductsPage({ params: { locale } }: { params: { locale: string } }) {
   const t = useTranslations('admin');
   const [products, setProducts] = useState<ProductItem[]>([]);
